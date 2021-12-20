@@ -1,0 +1,16 @@
+C:\Users\79610\source\repos\Blocknot\Blocknot\bin\Debug\Blocknot.exe.config
+C:\Users\79610\source\repos\Blocknot\Blocknot\bin\Debug\Blocknot.exe
+C:\Users\79610\source\repos\Blocknot\Blocknot\bin\Debug\Blocknot.pdb
+C:\Users\79610\source\repos\Blocknot\Blocknot\obj\Debug\Blocknot.Properties.Resources.resources
+C:\Users\79610\source\repos\Blocknot\Blocknot\obj\Debug\Blocknot.csproj.GenerateResource.cache
+C:\Users\79610\source\repos\Blocknot\Blocknot\obj\Debug\Blocknot.csproj.CoreCompileInputs.cache
+C:\Users\79610\source\repos\Blocknot\Blocknot\obj\Debug\Blocknot.exe
+C:\Users\79610\source\repos\Blocknot\Blocknot\obj\Debug\Blocknot.pdb
+C:\Users\79610\source\repos\Blocknot\Blocknot\obj\Debug\Blocknot.FontSettings.resources
+C:\Users\79610\source\repos\Blocknot\Blocknot\obj\Debug\Blocknot.csprojAssemblyReference.cache
+C:\Users\79610\source\repos\Blocknot\Blocknot\obj\Debug\Blocknot.Form1.resources
+C:\Users\79610\source\repos\Blocknot\Blocknot\bin\Debug\BlocknotDB.mdf
+C:\Users\79610\source\repos\Blocknot\Blocknot\bin\Debug\BlocknotDB_log.ldf
+C:\Users\79610\source\repos\Blocknot\Blocknot\bin\Debug\FluentFTP.dll
+C:\Users\79610\source\repos\Blocknot\Blocknot\bin\Debug\FluentFTP.xml
+C:\Users\79610\source\repos\Blocknot\Blocknot\obj\Debug\Blocknot.csproj.CopyComplete
