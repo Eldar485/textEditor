@@ -264,7 +264,7 @@ namespace Blocknot
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            LastFileList.DataSource = wdb.GetFilesWay(); ;
+            LastFileList.DataSource = wdb.GetFilesWay();
             LastFileList.ValueMember = "Way";
             LastFileList.SelectedIndex = -1;
         }
@@ -278,12 +278,23 @@ namespace Blocknot
             else
             {
                 SaveUnsavedFile();
-                StreamReader sr = new StreamReader(LastFileList.SelectedValue.ToString() + ".txt");
-                textBox1.Text = sr.ReadToEnd();
-                sr.Close();
-                filename = LastFileList.SelectedValue.ToString() + ".txt";
-                wdb.UpdateNewFile(filename);
-                isFileChanged = false;
+                try
+                {
+                    StreamReader sr = new StreamReader(LastFileList.SelectedValue.ToString() + ".txt");
+                    textBox1.Text = sr.ReadToEnd();
+                    sr.Close();
+                    filename = LastFileList.SelectedValue.ToString() + ".txt";
+                    wdb.UpdateNewFile(filename);
+                    isFileChanged = false;
+                }
+                catch
+                {
+                    MessageBox.Show("Этот файл больше не существует");
+                    wdb.DeleteFile(LastFileList.SelectedValue.ToString());
+                    LastFileList.DataSource = wdb.GetFilesWay();
+                    LastFileList.ValueMember = "Way";
+                    LastFileList.SelectedIndex = -1;
+                }
             }
         }
 
@@ -329,7 +340,6 @@ namespace Blocknot
         private void LoadFromFTP_Click(object sender, EventArgs e)
         {
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://192.168.0.15/" + FTPString.Text + ".txt");
-            // устанавливаем метод на загрузку файлов
             request.Method = WebRequestMethods.Ftp.DownloadFile;
             FtpWebResponse response = (FtpWebResponse)request.GetResponse();
             Stream responseStream = response.GetResponseStream();
@@ -339,12 +349,15 @@ namespace Blocknot
 
         private void SaveFTP_Click(object sender, EventArgs e)
         {
-            FtpWebRequest delRequest = (FtpWebRequest)WebRequest.Create("ftp://192.168.0.15/" + FTPString.Text + ".txt");
-            delRequest.Method = WebRequestMethods.Ftp.DeleteFile;
-            FtpWebResponse response1 = (FtpWebResponse)delRequest.GetResponse();
-            response1.Close();
+            try
+            {
+                FtpWebRequest delRequest = (FtpWebRequest)WebRequest.Create("ftp://192.168.0.15/" + FTPString.Text + ".txt");
+                delRequest.Method = WebRequestMethods.Ftp.DeleteFile;
+                FtpWebResponse response1 = (FtpWebResponse)delRequest.GetResponse();
+                response1.Close();
+            }
+            catch{}
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://192.168.0.15/" + FTPString.Text + ".txt");
-            // устанавливаем метод на загрузку файлов
             request.Method = WebRequestMethods.Ftp.AppendFile;
             request.ContentLength = textBox1.Text.Length;
             Stream requestStream = request.GetRequestStream();
@@ -543,6 +556,21 @@ namespace Blocknot
                 Changed = cmd.ExecuteNonQuery();
                 connection.Close();
                 return Changed;
+            }
+        }
+        public void DeleteFile(string filename)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "DELETE FROM [File] WHERE Way = @way";
+                SqlParameter wayParam = new SqlParameter("@way", filename);
+                cmd.Parameters.Add(wayParam);
+                cmd.ExecuteNonQuery();
+                connection.Close();
             }
         }
     }
