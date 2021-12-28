@@ -82,6 +82,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BlocknotDBDataSet2.xsd</DependentUpon>
     </Compile>
+    <Compile Include="CountChar.cs" />
+    <Compile Include="CountParagraphs.cs" />
+    <Compile Include="CountWords.cs" />
+    <Compile Include="Find.cs" />
     <Compile Include="FontSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,6 +100,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkWithDB.cs" />
     <EmbeddedResource Include="FontSettings.resx">
       <DependentUpon>FontSettings.cs</DependentUpon>
     </EmbeddedResource>

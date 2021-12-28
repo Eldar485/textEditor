@@ -16,9 +16,7 @@ using System.Collections;
 
 namespace Blocknot
 {
-
-    
-        public partial class Form1 : Form
+    public partial class Form1 : Form
     {
         public static int fontSize = 0;
         public static System.Drawing.FontStyle fs = FontStyle.Regular;
@@ -36,8 +34,7 @@ namespace Blocknot
         {
             InitializeComponent();
             wdb = new WorkWithDB();
-            Block c = new Block();
-            c.Init(textBox1.Text);
+            Init(textBox1.Text);
         }
         public void Save(object sender, EventArgs e)
         {
@@ -49,18 +46,16 @@ namespace Blocknot
         }
         public void CreateNewDocument(object sender, EventArgs e)
         {
-            Block c = new Block();
             SaveUnsavedFile();
             textBox1.Text = "";
             filename = "";
             isFileChanged = false;
-            c.UpdateTextWithTitle(textBox1.Text);
+            UpdateTextWithTitle();
         }
 
         private void OpenFile(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            Block c = new Block();
             SaveUnsavedFile();
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -84,7 +79,7 @@ namespace Blocknot
                     MessageBox.Show("Невозможно открыть файл!");
                 }
             }
-            c.UpdateTextWithTitle(textBox1.Text);
+            UpdateTextWithTitle();
         }
         public void CreateOrUpdate(string filename, bool exist)
         {
@@ -100,8 +95,6 @@ namespace Blocknot
 
         public void SaveFile(string _fileName)
         {
-
-            Block c = new Block();
             if (_fileName == "")
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -123,7 +116,7 @@ namespace Blocknot
                     MessageBox.Show("Невозможно сохранить файл");
                 }
             }
-            c.UpdateTextWithTitle(textBox1.Text);
+            UpdateTextWithTitle();
         }
 
         public void SaveUnsavedFile()
@@ -140,8 +133,7 @@ namespace Blocknot
 
         private void OnCopy(object sender, EventArgs e)
         {
-            Block c = new Block();
-            c.CopyText(textBox1.SelectedText);
+            CopyText(textBox1.SelectedText);
         }
 
         private void OnTextChanged(object sender, EventArgs e)
@@ -155,14 +147,12 @@ namespace Blocknot
         }
         private void OnCutClick(object sender, EventArgs e)
         {
-            Block c = new Block();
-            textBox1.Text = c.CutText(textBox1.Text, textBox1.SelectedText, textBox1.SelectionStart, textBox1.SelectionLength);
+            textBox1.Text = CutText(textBox1.Text, textBox1.SelectedText, textBox1.SelectionStart, textBox1.SelectionLength);
         }
 
         private void OnPast(object sender, EventArgs e)
         {
-            Block c = new Block();
-            textBox1.Text = c.PasteText(textBox1.Text, textBox1.SelectionStart, Clipboard.GetText());
+            textBox1.Text = PasteText(textBox1.Text, textBox1.SelectionStart, Clipboard.GetText());
         }
 
         private void OnFormClosing(object sender, FormClosedEventArgs e)
@@ -189,25 +179,23 @@ namespace Blocknot
 
         private void Click_Count_Words(object sender, EventArgs e)
         {
-            Block c = new Block();
-            Count count = new Count(new CountChar(block), new CountWords(block));
+            Count count = new Count(new CountChar(countCh), new CountWords(countWord));
             string a = count.WordsCount(textBox1.Text).ToString();
             Count_view.Text = a;
         }
         private void Click_Count_Char(object sender, EventArgs e)
         {
-            Block c = new Block();
-            Count count = new Count(new CountChar(block), new CountWords(block));
+            Count count = new Count(new CountChar(countCh), new CountWords(countWord));
             string a = count.CharsCount(textBox1.Text).ToString();
             Count_view.Text = a;
         }
 
         private void Click_Find(object sender, EventArgs e)
         {
-            Block c = new Block();
+            Find find = new Find();
             if (FindText.Text.Length > 0)
             {
-                list = c.Find(textBox1.Text, FindText.Text);
+                list = find.Finds(textBox1.Text, FindText.Text);
                 if (list.Count > 0)
                 {
                     button2.Enabled = true;
@@ -401,19 +389,44 @@ namespace Blocknot
 
         private void Count_Paragraphs_Click(object sender, EventArgs e)
         {
-            Block c = new Block();
+            CountParagraphs countParagraphs = new CountParagraphs();
             int count = 0;
             for (int i = 0; i < textBox1.Lines.Length; i++)
             {
-                if (c.CountParagraphs(textBox1.Lines[i]))
+                if (countParagraphs.CountParagraph(textBox1.Lines[i]))
                     count++;
             }
             string a = count.ToString();
             Count_view.Text = a;
         }
-
-        Block block = new Block();
-
+        public void UpdateTextWithTitle()
+        {
+            if (Form1.filename != "")
+                Text = Form1.filename + " - Блокнот";
+            else Text = "Безымянный - Блокнот";
+        }
+        public void Init(string text)
+        {
+            Form1.filename = "";
+            Form1.isFileChanged = false;
+            UpdateTextWithTitle();
+            FontSettings fs = new FontSettings();
+        }
+        public string CutText(string AllText, string Text, int Start, int Length)
+        {
+            Clipboard.SetText(Text);
+            return AllText.Remove(Start, Length);
+        }
+        public void CopyText(string Text)
+        {
+            Clipboard.SetText(Text);
+        }
+        public string PasteText(string Text, int Start, string PasteText)
+        {
+            return Text.Substring(0, Start) + PasteText + Text.Substring(Start, Text.Length - Start);
+        }
+        CountCh countCh = new CountCh();
+        CountWord countWord = new CountWord();
         Count count;
 
     }
@@ -425,28 +438,27 @@ namespace Blocknot
     }
 
     public class CountChar : Command {
-        Block block;
+        CountCh countCh;
 
-        public CountChar(Block block)
+        public CountChar(CountCh countCh)
         {
-            this.block = block;
+            this.countCh = countCh;
         }
         public int Execute(string a)
         {
-            return block.CountChar(a);
+            return countCh.CountChars(a);
         }
     }
     public class CountWords : Command
     {
-        Block block;
-
-        public CountWords(Block block)
+        CountWord countWord;
+        public CountWords(CountWord countWord)
         {
-            this.block = block;
+            this.countWord = countWord;
         }
         public int Execute(string a)
         {
-            return block.CountWords(a);
+            return countWord.CountWords(a);
         }
     }
 
@@ -472,222 +484,4 @@ namespace Blocknot
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    class WorkWithDB
-    {
-        string connectionString = "Data Source=localhost;Database=DB_FILES_TAHTAROV;Trusted_Connection=True;";
-          
-
-        public List<string> GetFilesName()
-        {
-            List<string> resultName = new List<string>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = connection;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT Way FROM [File]";
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    resultName.Add(String.Format("{0}", reader[0]));
-                }
-                connection.Close();
-            }
-            return resultName;
-        }
-        public List<string> GetFilesWay()
-        {
-            List<string> resultWay = new List<string>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = connection;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT TOP 3 Way FROM [File] ORDER BY EditDate DESC";
-
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    resultWay.Add(String.Format("{0}", reader[0]));
-                }
-                connection.Close();
-            }
-            return resultWay;
-        }
-
-        public void InsertNewFile(string _fileName)
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = connection;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "INSERT INTO [File] (Way, Name, EditDate) VALUES (@way, @name, @date)";
-                SqlParameter wayParam = new SqlParameter("@way", _fileName.Substring(0, _fileName.Length - 4));
-                cmd.Parameters.Add(wayParam);
-                SqlParameter nameParam = new SqlParameter("@name", _fileName.Substring(0, _fileName.Length - 4).Split('\\').Last());
-                cmd.Parameters.Add(nameParam);
-                SqlParameter dateParam = new SqlParameter("@date", DateTime.Now.ToString());
-                cmd.Parameters.Add(dateParam);
-                cmd.ExecuteNonQuery();
-                connection.Close();
-            }
-        }
-
-        public int UpdateNewFile(string filename)
-        {
-            int Changed = 0;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = connection;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "UPDATE [File] SET EditDate = @date WHERE Way = @name";
-                SqlParameter nameParam = new SqlParameter("@name", filename.ToString().Substring(0, filename.Length - 4));
-                cmd.Parameters.Add(nameParam);
-                SqlParameter date = new SqlParameter("@date", DateTime.Now);
-                cmd.Parameters.Add(date);
-                Changed = cmd.ExecuteNonQuery();
-                connection.Close();
-                return Changed;
-            }
-        }
-        public void DeleteFile(string filename)
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = connection;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "DELETE FROM [File] WHERE Way = @way";
-                SqlParameter wayParam = new SqlParameter("@way", filename);
-                cmd.Parameters.Add(wayParam);
-                cmd.ExecuteNonQuery();
-                connection.Close();
-            }
-        }
-    }
-
-    public class Block
-    {
-        public void Init(string text)
-        {
-            Block c = new Block();
-            Form1.filename = "";
-            Form1.isFileChanged = false;
-            c.UpdateTextWithTitle(text);
-            FontSettings fs = new FontSettings();
-        }
-        public string CutText(string AllText, string Text, int Start, int Length)
-        {
-            Clipboard.SetText(Text);
-            return AllText.Remove(Start, Length);
-        }
-        public int CountChar(string text)
-        {
-            return text.Length;
-        }
-        public bool CountParagraphs(string text)
-        {
-            if(text.IndexOf("   ") == 0)
-                return true; 
-            return false;
-        }
-        public List<int> Find(string text, string findText)
-        {
-            var list = new List<int>();
-            int lastFind = 0;
-            bool next = true;
-            while (next)
-            {
-                if (text.IndexOf(findText, lastFind) >= 0)
-                {
-                    list.Add(text.IndexOf(findText, lastFind));
-                    lastFind = text.IndexOf(findText, lastFind) + findText.Length;
-                }
-                else
-                    next = false;
-            }
-            return list;
-        }
-
-        public void UpdateTextWithTitle(string Text)
-        {
-            if (Form1.filename != "")
-                Text = Form1.filename + " - Блокнот";
-            else Text = "Безымянный - Блокнот";
-        }
-        public void CopyText(string Text)
-        {
-            Clipboard.SetText(Text);
-        }
-
-        public string PasteText(string Text, int Start, string PasteText)
-        {
-            return Text.Substring(0, Start) + PasteText + Text.Substring(Start, Text.Length - Start);
-        }
-        enum WordCountState
-        {
-            Init,
-            Word,
-            WhiteSpace
-        }
-        public int CountWords(string originString)
-        {
-            int wordCounter = 0;
-            WordCountState state = WordCountState.Init;
-
-            foreach (Char c in originString)
-            {
-                // In case of whitespace
-                if (Char.IsWhiteSpace(c))
-                {
-                    switch (state)
-                    {
-                        case WordCountState.Init:
-                        case WordCountState.Word:
-                            state = WordCountState.WhiteSpace;
-                            break;
-
-                        case WordCountState.WhiteSpace:
-                            // ignore whitespace chars
-                            break;
-
-                        default:
-                            throw new InvalidProgramException();
-                    }
-                    // In case of non-whitespace char
-                }
-                else
-                {
-                    switch (state)
-                    {
-                        case WordCountState.Init:
-                        case WordCountState.WhiteSpace:
-                            // Incerement out counter if we met non-whitespace
-                            // char after whitespace (one or more)
-                            wordCounter++;
-                            state = WordCountState.Word;
-                            break;
-
-                        case WordCountState.Word:
-                            // ignore all symbols in word
-                            break;
-
-                        default:
-                            throw new InvalidProgramException();
-                    }
-                }
-            }
-
-            return wordCounter;
-        }
-    }
 }

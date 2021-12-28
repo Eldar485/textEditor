@@ -8,60 +8,59 @@ namespace Blocknot
         [Test]
         public void CountWords()
         {
-            Block a = new Block();
-            Assert.AreEqual(a.CountWords("asdsd sdasd w3123 ghfgh"), 4);
-            Assert.AreEqual(a.CountWords("awdwd-wdawd"), 1);
-            Assert.AreEqual(a.CountWords(""), 0);
-            Assert.AreEqual(a.CountWords("asdsd ; sdasd $ w3123 ! ghfgh"), 7);
+            CountWord countWord = new CountWord();
+            Assert.AreEqual(countWord.CountWords("asdsd sdasd w3123 ghfgh"), 4);
+            Assert.AreEqual(countWord.CountWords("awdwd-wdawd"), 1);
+            Assert.AreEqual(countWord.CountWords(""), 0);
+            Assert.AreEqual(countWord.CountWords("asdsd ; sdasd $ w3123 ! ghfgh"), 7);
         }
         [Test]
         public void CountChar()
         {
-            Block a = new Block();
-            Assert.AreEqual(a.CountChar("asd"), 3);
-            Assert.AreEqual(a.CountChar("aw-wd"), 5);
-            Assert.AreEqual(a.CountChar(""), 0);
-            Assert.AreEqual(a.CountChar("asd sas"), 7);
+            CountCh countCh = new CountCh();
+            Assert.AreEqual(countCh.CountChars("asd"), 3);
+            Assert.AreEqual(countCh.CountChars("aw-wd"), 5);
+            Assert.AreEqual(countCh.CountChars(""), 0);
+            Assert.AreEqual(countCh.CountChars("asd sas"), 7);
         }
         [Test]
         public void CountParagraphs()
         {
-            Block a = new Block();
-            Assert.AreEqual(a.CountParagraphs("asd"), false);
-            Assert.AreEqual(a.CountParagraphs("aw-wd"), false);
-            Assert.AreEqual(a.CountParagraphs(""), false);
-            Assert.AreEqual(a.CountParagraphs("  "), false);
-            Assert.AreEqual(a.CountParagraphs("   asdasdsd"), true);
-            Assert.AreEqual(a.CountParagraphs("        sadasd"), true);
-            Assert.AreEqual(a.CountParagraphs("    "), true);
+            CountParagraphs countParagraphs = new CountParagraphs();
+            Assert.AreEqual(countParagraphs.CountParagraph("asd"), false);
+            Assert.AreEqual(countParagraphs.CountParagraph("aw-wd"), false);
+            Assert.AreEqual(countParagraphs.CountParagraph(""), false);
+            Assert.AreEqual(countParagraphs.CountParagraph("  "), false);
+            Assert.AreEqual(countParagraphs.CountParagraph("   asdasdsd"), true);
+            Assert.AreEqual(countParagraphs.CountParagraph("        sadasd"), true);
+            Assert.AreEqual(countParagraphs.CountParagraph("    "), true);
         }
         [Test]
         public void Find()
         {
-            Block a = new Block();
+            Find find = new Find();
             int[] expected1 = new int[] { 1 };
-            IEnumerable<int> processed1 = a.Find("sasssssssss", "a");
+            IEnumerable<int> processed1 = find.Finds("sasssssssss", "a");
             CollectionAssert.AreEqual(processed1, expected1);
             int[] expected2 = new int[] { 0 };
-            IEnumerable<int> processed2 = a.Find("assssssssss", "a");
+            IEnumerable<int> processed2 = find.Finds("assssssssss", "a");
             CollectionAssert.AreEqual(processed2, expected2);
             int[] expected3 = new int[] { 10 };
-            IEnumerable<int> processed3 = a.Find("ssssssssssa", "a");
+            IEnumerable<int> processed3 = find.Finds("ssssssssssa", "a");
             CollectionAssert.AreEqual(processed3, expected3);
             int[] expected4 = new int[] { 1, 2 };
-            IEnumerable<int> processed4 = a.Find("saassssssss", "a");
+            IEnumerable<int> processed4 = find.Finds("saassssssss", "a");
             CollectionAssert.AreEqual(processed4, expected4);
             int[] expected5 = new int[] { 1, 6 };
-            IEnumerable<int> processed5 = a.Find("sassssassss", "a");
+            IEnumerable<int> processed5 = find.Finds("sassssassss", "a");
             CollectionAssert.AreEqual(processed5, expected5);
             int[] expected6 = new int[] { 0, 10 };
-            IEnumerable<int> processed6 = a.Find("asssssssssa", "a");
+            IEnumerable<int> processed6 = find.Finds("asssssssssa", "a");
             CollectionAssert.AreEqual(processed6, expected6);
             int[] expected7 = new int[] { 1 };
-            IEnumerable<int> processed7 = a.Find("saassssssss", "aa");
+            IEnumerable<int> processed7 = find.Finds("saassssssss", "aa");
             CollectionAssert.AreEqual(processed7, expected7);
             int[] expected8 = new int[] { };
         }
-      
     }
 }
